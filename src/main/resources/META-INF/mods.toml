@@ -1,6 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "${loader_version_range}"
 license = "${mod_license}"
+displayTest = "MATCH_VERSION"
 
 [[mods]]
 modId = "${mod_id}"
@@ -20,5 +21,12 @@ side = "BOTH"
 modId = "minecraft"
 mandatory = true
 versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies."${mod_id}"]]
+modId = "ae2"
+mandatory = true
+versionRange = "${ae2_version_range}"
 ordering = "NONE"
 side = "BOTH"
