@@ -1,8 +1,5 @@
 package org.chatterjay.network_tool_plus.mixin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,8 +26,6 @@ public abstract class NetworkToolItemMixin {
 
     @Unique
     private static final String TAG_COLLECTOR_MODE = "collector_mode";
-    @Unique
-    private static final String TAG_COLLECTOR_ITEMS = "collector_items";
 
     @Inject(method = "onItemUseFirst", at = @At("HEAD"), cancellable = true, remap = false)
     private void networkToolPlus$onItemUseFirst(ItemStack stack, UseOnContext context,
@@ -97,18 +92,5 @@ public abstract class NetworkToolItemMixin {
         }
 
         toolHost.saveChanges();
-    }
-
-    @Unique
-    private List<ItemStack> networkToolPlus$loadCollectedItems(ItemStack stack) {
-        List<ItemStack> items = new ArrayList<>();
-        CompoundTag tag = stack.getTag();
-        if (tag != null && tag.contains(TAG_COLLECTOR_ITEMS, net.minecraft.nbt.Tag.TAG_LIST)) {
-            var list = tag.getList(TAG_COLLECTOR_ITEMS, net.minecraft.nbt.Tag.TAG_COMPOUND);
-            for (int i = 0; i < list.size(); i++) {
-                items.add(ItemStack.of(list.getCompound(i)));
-            }
-        }
-        return items;
     }
 }

@@ -86,9 +86,11 @@ public class NetworkToolEvents {
     }
 
     private static void collectCards(ItemStack toolStack, Player player) {
-        boolean useToolbox = resolveToolHost(player) != null;
-        NetworkToolMenuHost toolHost = useToolbox ? resolveToolHost(player)
-                : new NetworkToolMenuHost(player, null, toolStack, null);
+        NetworkToolMenuHost toolHost = resolveToolHost(player);
+        boolean useToolbox = toolHost != null;
+        if (toolHost == null) {
+            toolHost = new NetworkToolMenuHost(player, null, toolStack, null);
+        }
 
         Inventory inv = player.getInventory();
         boolean changed = false;

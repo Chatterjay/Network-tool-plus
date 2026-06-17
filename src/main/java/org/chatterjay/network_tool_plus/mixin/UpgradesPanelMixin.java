@@ -9,26 +9,6 @@ import appeng.client.gui.widgets.UpgradesPanel;
 @Mixin(UpgradesPanel.class)
 public abstract class UpgradesPanelMixin {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
     @ModifyConstant(method = "<clinit>", constant = @Constant(intValue = 128), remap = false)
     private static int networkToolPlus$modifyTextureSize(int constant) {
         return 160;
