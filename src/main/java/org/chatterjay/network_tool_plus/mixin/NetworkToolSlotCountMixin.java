@@ -14,7 +14,7 @@ public class NetworkToolSlotCountMixin {
     public static class NetworkToolMenuHostMixin {
         @ModifyConstant(method = "<init>", constant = @Constant(intValue = 9), remap = false)
         private int networkToolPlus$modifySlotCount(int constant) {
-            return 18;
+            return 21;
         }
     }
 
@@ -22,7 +22,7 @@ public class NetworkToolSlotCountMixin {
     public static class ToolboxMenuMixin {
         @ModifyConstant(method = "<init>", constant = @Constant(intValue = 9), remap = false)
         private int networkToolPlus$modifySlotCount(int constant) {
-            return 18;
+            return 21;
         }
     }
 
@@ -30,7 +30,7 @@ public class NetworkToolSlotCountMixin {
     public static class NetworkToolMenuMixin {
         @ModifyConstant(method = "<init>", constant = @Constant(intValue = 9), remap = false)
         private int networkToolPlus$modifySlotCount(int constant) {
-            return 18;
+            return 21;
         }
     }
 }

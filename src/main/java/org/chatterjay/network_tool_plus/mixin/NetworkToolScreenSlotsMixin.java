@@ -23,7 +23,7 @@ import net.minecraft.world.inventory.Slot;
 public abstract class NetworkToolScreenSlotsMixin {
 
     @Unique
-    private static final int NTP_COLUMNS = 6;
+    private static final int NTP_COLUMNS = 7;
     @Unique
     private static final int NTP_SLOT_SIZE = 18;
     @Unique
