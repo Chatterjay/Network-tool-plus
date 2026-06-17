@@ -6,9 +6,14 @@
   "refmap": "network_tool_plus.refmap.json",
   "mixins": [
     "ItemStackMixin",
-    "NetworkToolItemMixin"
+    "NetworkToolItemMixin",
+    "NetworkToolSlotCountMixin$NetworkToolMenuHostMixin",
+    "NetworkToolSlotCountMixin$NetworkToolMenuMixin",
+    "NetworkToolSlotCountMixin$ToolboxMenuMixin"
   ],
-  "client": [],
+  "client": [
+    "NetworkToolScreenSlotsMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
