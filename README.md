@@ -1,29 +1,29 @@
 # Network Tool Plus
 
-A Minecraft Forge 1.20.1 mod that extends AE2's **Network Tool** with an auto-collect feature.
+一个 Minecraft Forge 1.20.1 模组，为 AE2 **网络工具** 添加自动收集功能。
 
-## Features
+## 功能
 
-- **Collector Mode** — Sneak + right-click to toggle. The tool glows with enchantment effect when active.
-- **Auto-Collect Cards** — While active, any AE2 upgrade cards in your inventory are automatically moved into the tool's slots. Works continuously even when the tool is in your backpack.
-- **21 Upgrade Slots** — Expanded from the original 9 to 21 slots (7×3 grid).
-- **Custom GUI** — Redesigned slot layout with custom textures.
-- **Universal UI Refresh** — Slot updates work in all AE2 interfaces: crafting terminals, storage buses, IO buses, etc.
+- **收集模式** — 潜行 + 右键切换。激活时工具显示附魔光效。
+- **自动收卡** — 开启后背包中的 AE2 升级卡自动吸入工具。工具放在背包里也生效。
+- **21 格升级槽** — 从原版 9 格扩展至 21 格（7×3 网格）。
+- **自定义 GUI** — 重新设计的槽位布局和自定义贴图。
+- **全界面刷新** — 槽位更新在所有 AE2 界面中实时同步：合成终端、存储总线、IO 总线等。
 
-## Dependencies
+## 依赖
 
 - Minecraft 1.20.1
 - Forge 47.4.20+
 - Applied Energistics 2 (AE2) 15.4.5
 
-## Usage
+## 使用方法
 
-1. Craft or obtain an AE2 Network Tool
-2. Sneak + right-click (on air or any block) to toggle collector mode
-3. The tool will show an enchantment glint when collector mode is active
-4. Upgrade cards in your inventory will be automatically collected into the tool
-5. Sneak + right-click again to toggle off (cards remain in the tool)
+1. 获取 AE2 网络工具
+2. 潜行 + 右键（空气或方块）切换收集模式
+3. 工具出现附魔光效即表示收集模式已开启
+4. 背包中的升级卡会自动收入工具
+5. 再次潜行 + 右键关闭模式（卡片保留在工具内）
 
-## License
+## 许可
 
 GNU LGPL 3.0

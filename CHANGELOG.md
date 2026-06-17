@@ -1,21 +1,21 @@
-# Changelog
+# 更新日志
 
 ## 1.0.0-SNAPSHOT
 
-### Added
-- **Collector Mode**: Sneak+right-click toggles enchantment glint collector mode on AE2's Network Tool
-- **Auto-Collect**: Continuously collects AE2 upgrade cards from inventory into the tool's upgrade slots
-- **21 Slots**: Expanded from original 9 to 21 upgrade card slots (7 columns × 3 rows)
-- **Custom GUI Textures**: Override AE2 textures for Network Tool GUI and toolbox panel
-- **Multi-UI Support**: Real-time slot refresh across crafting terminals, storage buses, and all AE2 upgrade panels
-- **Persistence**: Collector mode and collected cards persist through logout, death, and item drops
+### 新增
+- **收集模式**：潜行+右键切换 AE2 网络工具的附魔光效收集模式
+- **自动收集**：持续将背包中的 AE2 升级卡吸入工具的升级槽
+- **21 格升级槽**：从原版 9 格扩展至 21 格（7 列 × 3 行）
+- **自定义 GUI 贴图**：替换 AE2 网络工具 GUI 和工具箱面板的纹理
+- **多界面支持**：在合成终端、存储总线等所有 AE2 界面中实时刷新槽位
+- **持久化**：收集模式和已收集的卡片在登出、死亡和丢出后保持不变
 
-### Changed
-- NetworkToolScreen: 7-column slot layout with custom background texture
-- Toolbox panel: Extended height with custom texture (160×160)
-- Slot count: 9 → 21 in NetworkToolMenuHost, ToolboxMenu, and NetworkToolMenu
+### 变更
+- NetworkToolScreen：7 列布局，使用自定义背景贴图
+- 工具箱面板：扩展高度，使用自定义 160×160 纹理
+- 槽位数量：NetworkToolMenuHost、ToolboxMenu、NetworkToolMenu 统一从 9→21
 
-### Fixed
-- Auto-collect now works with ToolboxMenu via reflection (terminal side panel)
-- Auto-collect refreshes across all AE2 UI types (MEStorageMenu and UpgradeableMenu)
-- Enchantment glint correctly shows collector mode via ItemStack mixin
+### 修复
+- 通过反射访问 ToolboxMenu，自动收集在终端侧边面板中实时生效
+- 自动收集在所有 AE2 界面类型（MEStorageMenu 和 UpgradeableMenu）中刷新
+- 通过 ItemStack Mixin 正确显示收集模式的附魔光效
