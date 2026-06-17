@@ -15,6 +15,7 @@ import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.materials.UpgradeCardItem;
 import appeng.items.tools.NetworkToolItem;
 import appeng.menu.ToolboxMenu;
+import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
@@ -69,24 +70,25 @@ public class NetworkToolEvents {
     }
 
     private static NetworkToolMenuHost resolveToolHost(Player player) {
+        ToolboxMenu toolbox = null;
         if (player.containerMenu instanceof MEStorageMenu storageMenu) {
-            ToolboxMenu toolbox = storageMenu.getToolbox();
-            if (toolbox != null && toolbox.isPresent() && TOOLBOX_INV_FIELD != null) {
-                try {
-                    return (NetworkToolMenuHost) TOOLBOX_INV_FIELD.get(toolbox);
-                } catch (Exception e) {
-                }
+            toolbox = storageMenu.getToolbox();
+        } else if (player.containerMenu instanceof UpgradeableMenu<?> upgradeableMenu) {
+            toolbox = upgradeableMenu.getToolbox();
+        }
+        if (toolbox != null && toolbox.isPresent() && TOOLBOX_INV_FIELD != null) {
+            try {
+                return (NetworkToolMenuHost) TOOLBOX_INV_FIELD.get(toolbox);
+            } catch (Exception e) {
             }
         }
         return null;
     }
 
     private static void collectCards(ItemStack toolStack, Player player) {
-        NetworkToolMenuHost toolHost = resolveToolHost(player);
-
-        if (toolHost == null) {
-            toolHost = new NetworkToolMenuHost(player, null, toolStack, null);
-        }
+        boolean useToolbox = resolveToolHost(player) != null;
+        NetworkToolMenuHost toolHost = useToolbox ? resolveToolHost(player)
+                : new NetworkToolMenuHost(player, null, toolStack, null);
 
         Inventory inv = player.getInventory();
         boolean changed = false;
@@ -119,6 +121,14 @@ public class NetworkToolEvents {
 
         if (changed) {
             toolHost.saveChanges();
+            if (!useToolbox) {
+                for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                    if (player.getInventory().getItem(i) == toolStack) {
+                        player.getInventory().setItem(i, toolStack.copy());
+                        break;
+                    }
+                }
+            }
             player.containerMenu.broadcastChanges();
         }
     }
