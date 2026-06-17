@@ -10,9 +10,9 @@
   "images": {
     "toolbox": {
       "texture": "guis/extra_panels.png",
-      "textureWidth": 128,
-      "textureHeight": 128,
-      "srcRect": [60, 60, 68, 68]
+      "textureWidth": 160,
+      "textureHeight": 160,
+      "srcRect": [4, 1, 68, 140]
     }
   },
   "widgets": {
@@ -20,7 +20,7 @@
       "right": -2,
       "bottom": 90,
       "width": 68,
-      "height": 68
+      "height": 140
     }
   }
 }
