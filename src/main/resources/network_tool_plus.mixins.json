@@ -12,7 +12,8 @@
     "NetworkToolSlotCountMixin$ToolboxMenuMixin"
   ],
   "client": [
-    "NetworkToolScreenSlotsMixin"
+    "NetworkToolScreenSlotsMixin",
+    "UpgradesPanelMixin"
   ],
   "injectors": {
     "defaultRequire": 1
