@@ -14,7 +14,6 @@ import appeng.items.tools.NetworkToolItem;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -58,11 +57,9 @@ public abstract class NetworkToolItemMixin {
         boolean currentMode = tag.getBoolean(TAG_COLLECTOR_MODE);
         if (currentMode) {
             tag.putBoolean(TAG_COLLECTOR_MODE, false);
-            player.displayClientMessage(Component.translatable("message.network_tool_plus.collector_mode.disabled"), true);
         } else {
             tag.putBoolean(TAG_COLLECTOR_MODE, true);
             networkToolPlus$collectCards(stack, player);
-            player.displayClientMessage(Component.translatable("message.network_tool_plus.collector_mode.enabled"), true);
         }
     }
 

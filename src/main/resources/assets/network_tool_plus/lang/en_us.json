@@ -1,5 +1,3 @@
 {
-  "message.network_tool_plus.collector_mode.enabled": "§aCollector mode enabled",
-  "message.network_tool_plus.collector_mode.disabled": "§7Collector mode disabled",
-  "tooltip.network_tool_plus.collector_mode": "§eCollector Mode"
+  "curios.identifier.network_tool": "Network Tool"
 }

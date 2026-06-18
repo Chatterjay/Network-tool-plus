@@ -1,5 +1,3 @@
 {
-  "message.network_tool_plus.collector_mode.enabled": "§a已开启收集模式",
-  "message.network_tool_plus.collector_mode.disabled": "§7已关闭收集模式",
-  "tooltip.network_tool_plus.collector_mode": "§e收集模式"
+  "curios.identifier.network_tool": "网络工具"
 }
