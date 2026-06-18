@@ -1,0 +1,26 @@
+{
+  "$schema": "../schema.json",
+  "slots": {
+    "TOOLBOX": {
+      "bottom": 82,
+      "right": -10,
+      "grid": "BREAK_AFTER_3COLS"
+    }
+  },
+  "images": {
+    "toolbox": {
+      "texture": "guis/extra_panels.png",
+      "textureWidth": 160,
+      "textureHeight": 160,
+      "srcRect": [74, 1, 67, 139]
+    }
+  },
+  "widgets": {
+    "toolbox": {
+      "right": -2,
+      "bottom": 90,
+      "width": 67,
+      "height": 139
+    }
+  }
+}

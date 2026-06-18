@@ -1,0 +1,26 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "org.chatterjay.network_tool_plus.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "network_tool_plus.refmap.json",
+  "mixins": [
+    "ItemStackMixin",
+    "NetworkToolItemMixin",
+    "NetworkToolSlotCountMixin$NetworkToolMenuHostMixin",
+    "NetworkToolSlotCountMixin$NetworkToolMenuMixin",
+    "NetworkToolSlotCountMixin$ToolboxMenuMixin",
+    "ToolboxMenuTickMixin",
+    "ToolboxMenuLockMixin"
+  ],
+  "client": [
+    "NetworkToolScreenSlotsMixin",
+    "UpgradesPanelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
