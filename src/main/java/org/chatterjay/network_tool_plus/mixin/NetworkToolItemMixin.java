@@ -6,12 +6,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import org.chatterjay.network_tool_plus.integration.CuriosProxy;
+
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.materials.UpgradeCardItem;
 import appeng.items.tools.NetworkToolItem;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -55,9 +58,26 @@ public abstract class NetworkToolItemMixin {
         boolean currentMode = tag.getBoolean(TAG_COLLECTOR_MODE);
         if (currentMode) {
             tag.putBoolean(TAG_COLLECTOR_MODE, false);
+            player.displayClientMessage(Component.translatable("message.network_tool_plus.collector_mode.disabled"), true);
         } else {
             tag.putBoolean(TAG_COLLECTOR_MODE, true);
             networkToolPlus$collectCards(stack, player);
+            player.displayClientMessage(Component.translatable("message.network_tool_plus.collector_mode.enabled"), true);
+        }
+    }
+
+    @Inject(method = "findNetworkToolInv", at = @At("RETURN"), cancellable = true, remap = false)
+    private static void networkToolPlus$findNetworkToolInv(Player player,
+            CallbackInfoReturnable<NetworkToolMenuHost> cir) {
+        if (cir.getReturnValue() != null)
+            return;
+        if (!CuriosProxy.isLoaded())
+            return;
+
+        ItemStack curiosStack = CuriosProxy.findAnyTool(player);
+        if (!curiosStack.isEmpty()) {
+            var host = new NetworkToolMenuHost(player, null, curiosStack, null);
+            cir.setReturnValue(host);
         }
     }
 

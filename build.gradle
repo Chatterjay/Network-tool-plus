@@ -110,6 +110,8 @@ dependencies {
     implementation fg.deobf("dev.emi:emi-forge:${emi_version}")
     implementation fg.deobf("appeng:appliedenergistics2-forge:${ae2_version}")
     implementation fg.deobf("org.appliedenergistics:guideme:20.1.7")
+
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.14.1+1.20.1")
 }
 
 tasks.named('processResources', ProcessResources).configure {

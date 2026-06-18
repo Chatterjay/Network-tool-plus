@@ -9,7 +9,8 @@
     "NetworkToolItemMixin",
     "NetworkToolSlotCountMixin$NetworkToolMenuHostMixin",
     "NetworkToolSlotCountMixin$NetworkToolMenuMixin",
-    "NetworkToolSlotCountMixin$ToolboxMenuMixin"
+    "NetworkToolSlotCountMixin$ToolboxMenuMixin",
+    "ToolboxMenuTickMixin"
   ],
   "client": [
     "NetworkToolScreenSlotsMixin",

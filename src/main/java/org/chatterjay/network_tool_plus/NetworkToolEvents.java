@@ -11,6 +11,8 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import org.chatterjay.network_tool_plus.integration.CuriosProxy;
+
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.materials.UpgradeCardItem;
 import appeng.items.tools.NetworkToolItem;
@@ -66,6 +68,13 @@ public class NetworkToolEvents {
             if (tag != null && tag.getBoolean("collector_mode"))
                 return stack;
         }
+
+        if (CuriosProxy.isLoaded()) {
+            ItemStack curiosStack = CuriosProxy.findActiveTool(player);
+            if (!curiosStack.isEmpty())
+                return curiosStack;
+        }
+
         return ItemStack.EMPTY;
     }
 
@@ -123,6 +132,7 @@ public class NetworkToolEvents {
 
         if (changed) {
             toolHost.saveChanges();
+            CuriosProxy.syncStack(player, toolStack);
             if (!useToolbox) {
                 for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                     if (player.getInventory().getItem(i) == toolStack) {
