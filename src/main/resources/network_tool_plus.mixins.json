@@ -10,7 +10,8 @@
     "NetworkToolSlotCountMixin$NetworkToolMenuHostMixin",
     "NetworkToolSlotCountMixin$NetworkToolMenuMixin",
     "NetworkToolSlotCountMixin$ToolboxMenuMixin",
-    "ToolboxMenuTickMixin"
+    "ToolboxMenuTickMixin",
+    "ToolboxMenuLockMixin"
   ],
   "client": [
     "NetworkToolScreenSlotsMixin",
