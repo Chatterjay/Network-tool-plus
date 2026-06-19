@@ -2,8 +2,8 @@
   "$schema": "../schema.json",
   "slots": {
     "TOOLBOX": {
-      "bottom": 0,
-      "right": -10,
+      "bottom": 84,
+      "right": 1,
       "grid": "BREAK_AFTER_3COLS"
     }
   },
@@ -17,10 +17,10 @@
   },
   "widgets": {
     "toolbox": {
-      "right": -2,
-      "bottom": 0,
+      "right": 2,
+      "bottom": 90,
       "width": 58,
-      "height": 136
+      "height": 138
     }
   }
 }

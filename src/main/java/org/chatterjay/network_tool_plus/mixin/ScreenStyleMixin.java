@@ -33,7 +33,7 @@ public abstract class ScreenStyleMixin {
 
             if (images != null && images.containsKey("toolbox")) {
                 var toolboxImage = Blitter.texture(EXTRA_PANELS, 160, 160)
-                        .src(101, 24, 58, 136);
+                        .src(101, 24, 58, 138);
                 images.put("toolbox", toolboxImage);
 
                 var widgetsField = ScreenStyle.class.getDeclaredField("widgets");
