@@ -14,7 +14,6 @@ import appeng.items.tools.NetworkToolItem;
 import appeng.menu.locator.MenuLocators;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -96,9 +95,6 @@ public abstract class NetworkToolItemMixin {
             if (slotStack.getItem() instanceof NetworkToolItem)
                 continue;
 
-            var key = BuiltInRegistries.ITEM.getKey(slotStack.getItem());
-            if (key == null || !"ae2".equals(key.getNamespace()))
-                continue;
             if (!(slotStack.getItem() instanceof UpgradeCardItem))
                 continue;
 

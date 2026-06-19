@@ -2,7 +2,6 @@ package org.chatterjay.network_tool_plus;
 
 import java.lang.reflect.Field;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -106,9 +105,6 @@ public class NetworkToolEvents {
             if (slotStack.getItem() instanceof NetworkToolItem)
                 continue;
 
-            var key = BuiltInRegistries.ITEM.getKey(slotStack.getItem());
-            if (key == null || !"ae2".equals(key.getNamespace()))
-                continue;
             if (!(slotStack.getItem() instanceof UpgradeCardItem))
                 continue;
 
