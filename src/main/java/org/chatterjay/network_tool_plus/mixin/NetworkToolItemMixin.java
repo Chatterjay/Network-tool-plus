@@ -1,7 +1,5 @@
 package org.chatterjay.network_tool_plus.mixin;
 
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,16 +29,11 @@ import net.minecraft.world.level.Level;
 public abstract class NetworkToolItemMixin {
 
     @Unique
-    private static final Logger LOGGER = LogUtils.getLogger();
-    @Unique
     private static final String TAG_COLLECTOR_MODE = "collector_mode";
 
     @Inject(method = "onItemUseFirst", at = @At("HEAD"), cancellable = true, remap = false)
     private void networkToolPlus$onItemUseFirst(ItemStack stack, UseOnContext context,
             CallbackInfoReturnable<InteractionResult> cir) {
-        LOGGER.info("[NetworkToolPlus] Mixin onItemUseFirst called, player={}, sneaking={}",
-                context.getPlayer() != null ? context.getPlayer().getName().getString() : "null",
-                context.getPlayer() != null && context.getPlayer().isSecondaryUseActive());
         if (context.getPlayer() != null && context.getPlayer().isSecondaryUseActive()) {
             if (!context.getLevel().isClientSide()) {
                 networkToolPlus$toggleCollectorMode(stack, context.getPlayer());
@@ -52,8 +45,6 @@ public abstract class NetworkToolItemMixin {
     @Inject(method = "use", at = @At("HEAD"), cancellable = true, remap = false)
     private void networkToolPlus$use(Level level, Player player, InteractionHand hand,
             CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
-        LOGGER.info("[NetworkToolPlus] Mixin use called, player={}, sneaking={}",
-                player.getName().getString(), player.isSecondaryUseActive());
         if (player.isSecondaryUseActive()) {
             if (!level.isClientSide()) {
                 networkToolPlus$toggleCollectorMode(player.getItemInHand(hand), player);
@@ -67,15 +58,10 @@ public abstract class NetworkToolItemMixin {
         var data = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
         var tag = data.copyTag();
         boolean currentMode = tag.getBoolean(TAG_COLLECTOR_MODE);
-        LOGGER.info("[NetworkToolPlus] Toggle collector mode: current={}", currentMode);
         if (currentMode) {
             tag.putBoolean(TAG_COLLECTOR_MODE, false);
-            player.displayClientMessage(net.minecraft.network.chat.Component.literal(
-                "§7[NetworkTool] §cCollector mode disabled"), true);
         } else {
             tag.putBoolean(TAG_COLLECTOR_MODE, true);
-            player.displayClientMessage(net.minecraft.network.chat.Component.literal(
-                "§7[NetworkTool] §aCollector mode enabled"), true);
             networkToolPlus$collectCards(stack, player);
         }
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
@@ -84,7 +70,6 @@ public abstract class NetworkToolItemMixin {
     @Inject(method = "findNetworkToolInv", at = @At("RETURN"), cancellable = true, remap = false)
     private static void networkToolPlus$findNetworkToolInv(Player player,
             CallbackInfoReturnable<NetworkToolMenuHost> cir) {
-        LOGGER.debug("[NetworkToolPlus] Mixin findNetworkToolInv called, currentReturn={}", cir.getReturnValue());
         if (cir.getReturnValue() != null)
             return;
         if (!CuriosProxy.isLoaded())
@@ -92,7 +77,6 @@ public abstract class NetworkToolItemMixin {
 
         ItemStack curiosStack = CuriosProxy.findAnyTool(player);
         if (!curiosStack.isEmpty()) {
-            LOGGER.info("[NetworkToolPlus] Found tool in Curios slot for menu locator");
             var toolItem = (NetworkToolItem) curiosStack.getItem();
             var locator = MenuLocators.forStack(curiosStack);
             var host = new NetworkToolMenuHost<>(toolItem, player, locator, null);
@@ -102,10 +86,8 @@ public abstract class NetworkToolItemMixin {
 
     @Unique
     private void networkToolPlus$collectCards(ItemStack toolStack, Player player) {
-        LOGGER.info("[NetworkToolPlus] Immediate collect on toggle for player: {}", player.getName().getString());
         var inv = NetworkToolItem.getInventory(toolStack);
         Inventory playerInv = player.getInventory();
-        int collectedCount = 0;
 
         for (int i = 0; i < playerInv.getContainerSize(); i++) {
             ItemStack slotStack = playerInv.getItem(i);
@@ -125,17 +107,11 @@ public abstract class NetworkToolItemMixin {
             int inserted = originalCount - overflow.getCount();
 
             if (inserted > 0) {
-                collectedCount++;
                 slotStack.shrink(inserted);
                 if (slotStack.isEmpty()) {
                     playerInv.setItem(i, ItemStack.EMPTY);
-                } else {
-                    playerInv.setItem(i, slotStack);
                 }
-                LOGGER.info("[NetworkToolPlus] Collected {}x {} on toggle", inserted, key.getPath());
             }
         }
-
-        LOGGER.info("[NetworkToolPlus] Immediate collect complete: {} items collected", collectedCount);
     }
 }

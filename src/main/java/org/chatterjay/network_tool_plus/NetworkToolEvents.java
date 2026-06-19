@@ -2,9 +2,6 @@ package org.chatterjay.network_tool_plus;
 
 import java.lang.reflect.Field;
 
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -15,16 +12,17 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import org.chatterjay.network_tool_plus.integration.CuriosProxy;
 
+import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.materials.UpgradeCardItem;
 import appeng.items.tools.NetworkToolItem;
 import appeng.menu.ToolboxMenu;
+import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
 @EventBusSubscriber(modid = Network_tool_plus.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class NetworkToolEvents {
 
-    private static final Logger LOGGER = LogUtils.getLogger();
     private static final int COLLECTION_INTERVAL = 10;
     private static final Field TOOLBOX_INV_FIELD;
 
@@ -76,12 +74,12 @@ public class NetworkToolEvents {
         return ItemStack.EMPTY;
     }
 
-    private static appeng.items.contents.NetworkToolMenuHost<?> resolveToolHost(Player player) {
+    private static NetworkToolMenuHost<?> resolveToolHost(Player player) {
         if (player.containerMenu instanceof MEStorageMenu storageMenu) {
             var toolbox = storageMenu.getToolbox();
             if (toolbox != null && toolbox.isPresent() && TOOLBOX_INV_FIELD != null) {
                 try {
-                    return (appeng.items.contents.NetworkToolMenuHost<?>) TOOLBOX_INV_FIELD.get(toolbox);
+                    return (NetworkToolMenuHost<?>) TOOLBOX_INV_FIELD.get(toolbox);
                 } catch (Exception e) {
                 }
             }
@@ -93,8 +91,9 @@ public class NetworkToolEvents {
         var toolHost = resolveToolHost(player);
         boolean useToolbox = toolHost != null;
         if (toolHost == null) {
-            toolHost = new appeng.items.contents.NetworkToolMenuHost<>(
-                    (NetworkToolItem) toolStack.getItem(), player, null, null);
+            toolHost = new NetworkToolMenuHost<>(
+                    (NetworkToolItem) toolStack.getItem(), player,
+                    MenuLocators.forStack(toolStack), null);
         }
 
         Inventory playerInv = player.getInventory();

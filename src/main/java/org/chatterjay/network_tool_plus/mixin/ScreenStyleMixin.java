@@ -1,7 +1,5 @@
 package org.chatterjay.network_tool_plus.mixin;
 
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,8 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 @Mixin(StyleManager.class)
 public abstract class ScreenStyleMixin {
 
-    @Unique
-    private static final Logger LOGGER = LogUtils.getLogger();
     @Unique
     private static final ResourceLocation TOOLBOX_BG = ResourceLocation.parse("network_tool_plus:textures/guis/toolbox.png");
     @Unique
@@ -49,20 +45,14 @@ public abstract class ScreenStyleMixin {
                     ws.setWidth(58);
                     ws.setHeight(138);
                 }
-                LOGGER.info("[NetworkToolPlus] Patched toolbox image for {}", path);
             }
 
             if ("/screens/network_tool.json".equals(path)) {
                 var backgroundField = ScreenStyle.class.getDeclaredField("background");
                 backgroundField.setAccessible(true);
                 backgroundField.set(style, Blitter.texture(TOOLBOX_BG, 256, 256).src(0, 0, 175, 168));
-                LOGGER.info("[NetworkToolPlus] PATCHED background for {}", path);
             }
         } catch (Exception e) {
-            LOGGER.error("[NetworkToolPlus] ERROR in patchBackground: {}", e.toString());
-            for (var ste : e.getStackTrace()) {
-                LOGGER.error("  at {}", ste.toString());
-            }
         }
     }
 }
