@@ -1,7 +1,9 @@
 package org.chatterjay.network_tool_plus.integration;
 
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
+
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
@@ -13,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 
 public class CuriosProxy {
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static Boolean loaded;
     private static Method getCuriosMethod;
     private static Method getStacksMethod;
@@ -34,19 +37,11 @@ public class CuriosProxy {
         try {
             var curiosApi = Class.forName("top.theillusivec4.curios.api.CuriosApi");
             var getCuriosInventory = curiosApi.getMethod("getCuriosInventory", net.minecraft.world.entity.LivingEntity.class);
-            Object lazyOpt = getCuriosInventory.invoke(null, player);
-
-            var lazyOptClass = Class.forName("net.neoforged.neoforge.common.util.LazyOptional");
-            if (lazyOptClass == null)
-                lazyOptClass = Class.forName("net.minecraftforge.common.util.LazyOptional");
-            boolean isPresent = (boolean) lazyOptClass.getMethod("isPresent").invoke(lazyOpt);
-            if (!isPresent)
-                return null;
-
-            var resolveMethod = lazyOptClass.getMethod("resolve");
-            Optional<?> opt = (Optional<?>) resolveMethod.invoke(lazyOpt);
+            @SuppressWarnings("unchecked")
+            Optional<Object> opt = (Optional<Object>) getCuriosInventory.invoke(null, player);
             return opt.orElse(null);
         } catch (Exception e) {
+            LOGGER.error("[NetworkToolPlus] Curios getHandler failed: {}", e.toString());
             return null;
         }
     }
@@ -66,13 +61,16 @@ public class CuriosProxy {
 
     private static ItemStack findTool(Player player, boolean requireCollectorMode) {
         Object handler = getHandler(player);
-        if (handler == null)
+        if (handler == null) {
+            LOGGER.debug("[NetworkToolPlus] Curios handler null for player {}", player.getName().getString());
             return ItemStack.EMPTY;
+        }
 
         try {
             if (getCuriosMethod == null)
                 getCuriosMethod = handler.getClass().getMethod("getCurios");
             Object curiosMap = getCuriosMethod.invoke(handler);
+            LOGGER.debug("[NetworkToolPlus] Curios map size: {}", ((java.util.Map<?, ?>) curiosMap).size());
 
             for (var entry : ((java.util.Map<?, ?>) curiosMap).entrySet()) {
                 Object stacksHandler = entry.getValue();
@@ -91,12 +89,14 @@ public class CuriosProxy {
                 for (int i = 0; i < slots; i++) {
                     ItemStack stack = (ItemStack) getStackInSlotMethod.invoke(stackHandler, i);
                     if (!stack.isEmpty() && stack.getItem() instanceof NetworkToolItem) {
+                        LOGGER.debug("[NetworkToolPlus] Found NetworkTool in Curios slot {}, collector={}", i, hasCollectorMode(stack));
                         if (!requireCollectorMode || hasCollectorMode(stack))
                             return stack;
                     }
                 }
             }
         } catch (Exception e) {
+            LOGGER.error("[NetworkToolPlus] Curios findTool failed: {}", e.toString());
         }
         return ItemStack.EMPTY;
     }
@@ -136,6 +136,7 @@ public class CuriosProxy {
                 }
             }
         } catch (Exception e) {
+            LOGGER.error("[NetworkToolPlus] Curios syncStack failed: {}", e.toString());
         }
     }
 }

@@ -2,25 +2,25 @@
   "$schema": "../schema.json",
   "slots": {
     "TOOLBOX": {
-      "bottom": 82,
+      "bottom": 0,
       "right": -10,
       "grid": "BREAK_AFTER_3COLS"
     }
   },
   "images": {
     "toolbox": {
-      "texture": "guis/extra_panels.png",
+      "texture": "network_tool_plus:textures/guis/extra_panels.png",
       "textureWidth": 160,
       "textureHeight": 160,
-      "srcRect": [74, 1, 67, 139]
+      "srcRect": [101, 24, 58, 138]
     }
   },
   "widgets": {
     "toolbox": {
       "right": -2,
-      "bottom": 90,
-      "width": 67,
-      "height": 139
+      "bottom": 0,
+      "width": 58,
+      "height": 136
     }
   }
 }

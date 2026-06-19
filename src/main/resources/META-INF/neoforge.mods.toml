@@ -29,3 +29,6 @@ mandatory = true
 versionRange = "${ae2_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+[[mixins]]
+config = "${mod_id}.mixins.json"

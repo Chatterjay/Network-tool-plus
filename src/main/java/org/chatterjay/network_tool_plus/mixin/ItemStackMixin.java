@@ -14,7 +14,7 @@ import net.minecraft.world.item.component.CustomData;
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
 
-    @Inject(method = "isFoil", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "hasFoil", at = @At("RETURN"), cancellable = true)
     private void networkToolPlus$isFoil(CallbackInfoReturnable<Boolean> cir) {
         ItemStack self = (ItemStack) (Object) this;
         if (self.getItem() instanceof NetworkToolItem) {

@@ -1,12 +1,14 @@
 package org.chatterjay.network_tool_plus;
 
-import net.minecraft.core.component.DataComponents;
+import java.lang.reflect.Field;
+
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
+
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -15,15 +17,29 @@ import org.chatterjay.network_tool_plus.integration.CuriosProxy;
 
 import appeng.items.materials.UpgradeCardItem;
 import appeng.items.tools.NetworkToolItem;
+import appeng.menu.ToolboxMenu;
+import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
 @EventBusSubscriber(modid = Network_tool_plus.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class NetworkToolEvents {
 
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final int COLLECTION_INTERVAL = 10;
+    private static final Field TOOLBOX_INV_FIELD;
+
+    static {
+        Field f = null;
+        try {
+            f = ToolboxMenu.class.getDeclaredField("inv");
+            f.setAccessible(true);
+        } catch (Exception e) {
+        }
+        TOOLBOX_INV_FIELD = f;
+    }
 
     @SubscribeEvent
-    public static void onPlayerTick(PlayerTickEvent event) {
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
         if (player.level().isClientSide())
             return;
@@ -46,7 +62,7 @@ public class NetworkToolEvents {
                 continue;
             if (!(stack.getItem() instanceof NetworkToolItem))
                 continue;
-            var data = stack.get(DataComponents.CUSTOM_DATA);
+            var data = stack.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
             if (data != null && data.copyTag().getBoolean("collector_mode"))
                 return stack;
         }
@@ -60,8 +76,27 @@ public class NetworkToolEvents {
         return ItemStack.EMPTY;
     }
 
+    private static appeng.items.contents.NetworkToolMenuHost<?> resolveToolHost(Player player) {
+        if (player.containerMenu instanceof MEStorageMenu storageMenu) {
+            var toolbox = storageMenu.getToolbox();
+            if (toolbox != null && toolbox.isPresent() && TOOLBOX_INV_FIELD != null) {
+                try {
+                    return (appeng.items.contents.NetworkToolMenuHost<?>) TOOLBOX_INV_FIELD.get(toolbox);
+                } catch (Exception e) {
+                }
+            }
+        }
+        return null;
+    }
+
     private static void collectCards(ItemStack toolStack, Player player) {
-        var inv = NetworkToolItem.getInventory(toolStack);
+        var toolHost = resolveToolHost(player);
+        boolean useToolbox = toolHost != null;
+        if (toolHost == null) {
+            toolHost = new appeng.items.contents.NetworkToolMenuHost<>(
+                    (NetworkToolItem) toolStack.getItem(), player, null, null);
+        }
+
         Inventory playerInv = player.getInventory();
         boolean changed = false;
 
@@ -79,7 +114,7 @@ public class NetworkToolEvents {
                 continue;
 
             int originalCount = slotStack.getCount();
-            var overflow = inv.addItems(slotStack.copy());
+            var overflow = toolHost.getInventory().addItems(slotStack.copy());
             int inserted = originalCount - overflow.getCount();
 
             if (inserted > 0) {
@@ -93,6 +128,14 @@ public class NetworkToolEvents {
 
         if (changed) {
             CuriosProxy.syncStack(player, toolStack);
+            if (!useToolbox) {
+                for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                    if (player.getInventory().getItem(i) == toolStack) {
+                        player.getInventory().setItem(i, toolStack.copy());
+                        break;
+                    }
+                }
+            }
             player.containerMenu.broadcastChanges();
         }
     }
