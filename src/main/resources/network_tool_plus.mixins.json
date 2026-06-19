@@ -13,7 +13,8 @@
   ],
   "client": [
     "NetworkToolScreenSlotsMixin",
-    "ScreenStyleMixin"
+    "ScreenStyleMixin",
+    "UpgradesPanelMixin"
   ],
   "injectors": {
     "defaultRequire": 1
