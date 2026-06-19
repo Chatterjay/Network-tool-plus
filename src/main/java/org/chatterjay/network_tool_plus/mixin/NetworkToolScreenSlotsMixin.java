@@ -13,8 +13,6 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
-import appeng.menu.implementations.UpgradeableMenu;
-import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
 import net.minecraft.world.inventory.Slot;
@@ -26,6 +24,8 @@ public abstract class NetworkToolScreenSlotsMixin {
     private static final int NTP_COLUMNS = 7;
     @Unique
     private static final int NTP_SLOT_SIZE = 18;
+    @Unique
+    private static final int[] NTP_TOOLBOX_Y_CORRECTION = { 0, 0, 0, -1, -1, -2, -2 };
     @Unique
     private static Field NTP_SLOT_X;
     @Unique
@@ -43,31 +43,46 @@ public abstract class NetworkToolScreenSlotsMixin {
 
     @Inject(method = "repositionSlots", at = @At("HEAD"), cancellable = true, remap = false)
     private void networkToolPlus$repositionSlots(SlotSemantic semantic, CallbackInfo ci) {
-        if (semantic != SlotSemantics.STORAGE)
-            return;
-
         var menu = ((AEBaseScreen<?>) (Object) this).getMenu();
-        if (!(menu instanceof NetworkToolMenu))
-            return;
 
-        // GUI-relative positions: 2 columns left of original 3×3 start (62)
-        int baseX = 62 - 2 * NTP_SLOT_SIZE;
-        int baseY = 19;
+        if (semantic == SlotSemantics.STORAGE && menu instanceof NetworkToolMenu) {
+            int baseX = 62 - 2 * NTP_SLOT_SIZE;
+            int baseY = 19;
+            var slots = ((AEBaseMenu) menu).getSlots(semantic);
+            for (int i = 0; i < slots.size(); i++) {
+                Slot slot = slots.get(i);
+                int newX = baseX + (i % NTP_COLUMNS) * NTP_SLOT_SIZE;
+                int newY = baseY + (i / NTP_COLUMNS) * NTP_SLOT_SIZE;
+                if (NTP_SLOT_X != null && NTP_SLOT_Y != null) {
+                    try {
+                        NTP_SLOT_X.setInt(slot, newX);
+                        NTP_SLOT_Y.setInt(slot, newY);
+                    } catch (Exception e) {
+                    }
+                }
+            }
+            ci.cancel();
+        }
+    }
 
-        List<Slot> slots = ((AEBaseMenu) menu).getSlots(semantic);
+    @Inject(method = "repositionSlots", at = @At("RETURN"), remap = false)
+    private void networkToolPlus$fixToolboxSlots(SlotSemantic semantic, CallbackInfo ci) {
+        if (semantic != SlotSemantics.TOOLBOX) return;
+        var menu = ((AEBaseScreen<?>) (Object) this).getMenu();
+        var slots = ((AEBaseMenu) menu).getSlots(semantic);
+        if (slots.size() != 21) return;
+        if (NTP_SLOT_Y == null) return;
+
         for (int i = 0; i < slots.size(); i++) {
-            Slot slot = slots.get(i);
-            int newX = baseX + (i % NTP_COLUMNS) * NTP_SLOT_SIZE;
-            int newY = baseY + (i / NTP_COLUMNS) * NTP_SLOT_SIZE;
-            if (NTP_SLOT_X != null && NTP_SLOT_Y != null) {
+            int row = i / 3;
+            int correction = NTP_TOOLBOX_Y_CORRECTION[row];
+            if (correction != 0) {
                 try {
-                    NTP_SLOT_X.setInt(slot, newX);
-                    NTP_SLOT_Y.setInt(slot, newY);
+                    Slot slot = slots.get(i);
+                    NTP_SLOT_Y.setInt(slot, slot.y + correction);
                 } catch (Exception e) {
                 }
             }
         }
-
-        ci.cancel();
     }
 }
