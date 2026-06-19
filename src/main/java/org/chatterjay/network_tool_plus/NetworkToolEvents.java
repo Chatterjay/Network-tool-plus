@@ -15,6 +15,7 @@ import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.materials.UpgradeCardItem;
 import appeng.items.tools.NetworkToolItem;
 import appeng.menu.ToolboxMenu;
+import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
@@ -74,13 +75,18 @@ public class NetworkToolEvents {
     }
 
     private static NetworkToolMenuHost<?> resolveToolHost(Player player) {
+        ToolboxMenu toolbox = null;
+
         if (player.containerMenu instanceof MEStorageMenu storageMenu) {
-            var toolbox = storageMenu.getToolbox();
-            if (toolbox != null && toolbox.isPresent() && TOOLBOX_INV_FIELD != null) {
-                try {
-                    return (NetworkToolMenuHost<?>) TOOLBOX_INV_FIELD.get(toolbox);
-                } catch (Exception e) {
-                }
+            toolbox = storageMenu.getToolbox();
+        } else if (player.containerMenu instanceof UpgradeableMenu<?> upgradeableMenu) {
+            toolbox = upgradeableMenu.getToolbox();
+        }
+
+        if (toolbox != null && toolbox.isPresent() && TOOLBOX_INV_FIELD != null) {
+            try {
+                return (NetworkToolMenuHost<?>) TOOLBOX_INV_FIELD.get(toolbox);
+            } catch (Exception e) {
             }
         }
         return null;

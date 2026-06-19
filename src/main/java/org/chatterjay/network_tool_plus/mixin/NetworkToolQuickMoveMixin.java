@@ -12,7 +12,6 @@ import appeng.items.materials.UpgradeCardItem;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
-import appeng.menu.me.common.MEStorageMenu;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -39,12 +38,12 @@ public abstract class NetworkToolQuickMoveMixin {
         var stackToMove = clickSlot.getItem();
         if (stackToMove.isEmpty()) return;
         if (!(stackToMove.getItem() instanceof UpgradeCardItem)) return;
-        if (getSlotSemantic(clickSlot) != SlotSemantics.TOOLBOX) return;
-        if (((Object) this) instanceof MEStorageMenu) return;
+
+        var slotSemantic = getSlotSemantic(clickSlot);
+        if (slotSemantic == SlotSemantics.UPGRADE) return;
 
         var upgradeSlots = getSlots(SlotSemantics.UPGRADE);
         if (upgradeSlots.isEmpty()) {
-            cir.setReturnValue(ItemStack.EMPTY);
             return;
         }
 
