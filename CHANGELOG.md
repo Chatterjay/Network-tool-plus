@@ -1,5 +1,14 @@
 # 更新日志
 
+## 0.0.3
+
+### 修复
+- **修复卡复制问题**：`NetworkToolQuickMoveMixin` 中 `shrink` 后始终调用 `clickSlot.set()`，避免部分移除（64→63）数据组件过期导致自动收卡重新添加
+- **自动收卡独立宿主**：移除 `resolveToolHost` 反射，始终使用独立 `NetworkToolMenuHost`，防止与工具箱共享 `SupplierInternalInventory` 导致 Pattern Provider 菜单中复制
+
+### 新增
+- **模组图标**：添加自定义模组图标
+
 ## 0.0.2
 
 ### 新增
