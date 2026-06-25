@@ -62,9 +62,11 @@ public abstract class NetworkToolQuickMoveMixin {
         }
 
         stackToMove.shrink(inserted);
-        if (stackToMove.isEmpty()) {
-            clickSlot.set(ItemStack.EMPTY);
-        }
+        // Always call set() to trigger AppEngInternalInventory.saveChangedInventory
+        // and persist the count change to the tool's CONTAINER data component.
+        // Without this, partial removals (e.g., 64→63) leave the data component stale,
+        // causing auto-collect to re-add cards from a phantom state.
+        clickSlot.set(stackToMove.isEmpty() ? ItemStack.EMPTY : stackToMove);
         player.containerMenu.broadcastChanges();
         cir.setReturnValue(ItemStack.EMPTY);
     }

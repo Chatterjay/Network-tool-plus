@@ -1,6 +1,8 @@
 package org.chatterjay.network_tool_plus;
 
-import java.lang.reflect.Field;
+import org.slf4j.Logger;
+
+import com.mojang.logging.LogUtils;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -14,27 +16,14 @@ import org.chatterjay.network_tool_plus.integration.CuriosProxy;
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.materials.UpgradeCardItem;
 import appeng.items.tools.NetworkToolItem;
-import appeng.menu.ToolboxMenu;
-import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.locator.MenuLocators;
-import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
 @EventBusSubscriber(modid = Network_tool_plus.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class NetworkToolEvents {
 
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final int COLLECTION_INTERVAL = 10;
-    private static final Field TOOLBOX_INV_FIELD;
-
-    static {
-        Field f = null;
-        try {
-            f = ToolboxMenu.class.getDeclaredField("inv");
-            f.setAccessible(true);
-        } catch (Exception e) {
-        }
-        TOOLBOX_INV_FIELD = f;
-    }
 
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
@@ -74,32 +63,15 @@ public class NetworkToolEvents {
         return ItemStack.EMPTY;
     }
 
-    private static NetworkToolMenuHost<?> resolveToolHost(Player player) {
-        ToolboxMenu toolbox = null;
-
-        if (player.containerMenu instanceof MEStorageMenu storageMenu) {
-            toolbox = storageMenu.getToolbox();
-        } else if (player.containerMenu instanceof UpgradeableMenu<?> upgradeableMenu) {
-            toolbox = upgradeableMenu.getToolbox();
-        }
-
-        if (toolbox != null && toolbox.isPresent() && TOOLBOX_INV_FIELD != null) {
-            try {
-                return (NetworkToolMenuHost<?>) TOOLBOX_INV_FIELD.get(toolbox);
-            } catch (Exception e) {
-            }
-        }
-        return null;
-    }
-
     private static void collectCards(ItemStack toolStack, Player player) {
-        var toolHost = resolveToolHost(player);
-        boolean useToolbox = toolHost != null;
-        if (toolHost == null) {
-            toolHost = new NetworkToolMenuHost<>(
-                    (NetworkToolItem) toolStack.getItem(), player,
-                    MenuLocators.forStack(toolStack), null);
-        }
+        // Always create a fresh host directly from the tool stack.
+        // Never use the menu's toolbox host (resolveToolHost) — that shares
+        // the SupplierInternalInventory with toolbox slots and modifying it
+        // during the menu's broadcastChanges/toolbox.tick cycle causes card
+        // duplication in Pattern Provider menus.
+        var toolHost = new NetworkToolMenuHost<>(
+                (NetworkToolItem) toolStack.getItem(), player,
+                MenuLocators.forStack(toolStack), null);
 
         Inventory playerInv = player.getInventory();
         boolean changed = false;
@@ -115,6 +87,7 @@ public class NetworkToolEvents {
                 continue;
 
             int originalCount = slotStack.getCount();
+            String cardName = slotStack.getHoverName().getString();
             var overflow = toolHost.getInventory().addItems(slotStack.copy());
             int inserted = originalCount - overflow.getCount();
 
@@ -124,19 +97,23 @@ public class NetworkToolEvents {
                     playerInv.setItem(i, ItemStack.EMPTY);
                 }
                 changed = true;
+                LOGGER.info("[NetworkToolPlus] Collected {}x {} into network tool (player: {})",
+                        inserted, cardName, player.getName().getString());
             }
         }
 
         if (changed) {
             CuriosProxy.syncStack(player, toolStack);
-            if (!useToolbox) {
-                for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-                    if (player.getInventory().getItem(i) == toolStack) {
-                        player.getInventory().setItem(i, toolStack.copy());
-                        break;
-                    }
+
+            // Persist the updated tool stack to the player's inventory slot
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                if (player.getInventory().getItem(i) == toolStack) {
+                    player.getInventory().setItem(i, toolStack.copy());
+                    break;
                 }
             }
+
+            // Sync changes to client
             player.containerMenu.broadcastChanges();
         }
     }
