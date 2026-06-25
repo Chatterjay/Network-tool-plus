@@ -11,6 +11,7 @@
     "NetworkToolSlotCountMixin$NetworkToolMenuMixin",
     "NetworkToolSlotCountMixin$ToolboxMenuMixin",
     "ToolboxMenuTickMixin",
+    "NetworkToolQuickMoveMixin",
     "ToolboxMenuLockMixin"
   ],
   "client": [
