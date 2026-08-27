@@ -15,23 +15,33 @@
 
 | 依赖 | 版本 | 必需 |
 |---|---|---|
-| Minecraft | 1.21.1 | 是 |
-| NeoForge | 21.1.219+ | 是 |
-| AE2 | 19.0+ | 是 |
-| Curios | 9.1.0+ | 否 |
+| Minecraft | 26.1.2 | 是 |
+| NeoForge | 26.1.2.99+ | 是 |
+| AE2 | 26.1.11-beta+ | 是 |
+| Curios | 15.0.0+26.1.2 | 否 |
 
 ## 安装
 
-1. 为 Minecraft 1.21.1 安装 NeoForge
-2. 安装 AE2
-3. 将模组 jar 放入 `mods` 文件夹
-4.（可选）安装 Curios 以获得饰品栏支持
+1. 为 Minecraft 26.1.2 安装 NeoForge 26.1.2.99+
+2. 安装 AE2 26.1.11-beta+
+3. 将模组 jar（`network_tool_plus-26.1.3.jar`）放入 `mods` 文件夹
+4.（可选）安装 Curios 15.0.0+26.1.2 以获得饰品栏支持
 
 ## 使用
 
 1. 手持网络工具，潜行 + 右键切换收集模式（工具出现附魔光效）
 2. 背包中的升级卡会自动被吸入工具
 3. 打开任意 AE2 机器 GUI，工具的升级槽会显示在工具箱面板中（7×3 而非 3×3）
+
+## 构建
+
+```powershell
+cd 26.1.2
+$env:JAVA_HOME='C:/Users/Admin/.gradle/jdks/eclipse_adoptium-25-amd64-windows.2'  # JDK 25
+./gradlew.bat build   # 产物 build/libs/network_tool_plus-26.1.3.jar
+```
+
+需 JDK 25 / Gradle 9.2.1。
 
 ## 许可
 

@@ -1,5 +1,22 @@
 # 更新日志
 
+## 26.1.3 — 移植至 Minecraft 26.1.2
+
+### 移植
+- 目标版本：Minecraft `26.1.2` / NeoForge `26.1.2.99` / AE2 `26.1.11-beta` / Curios `15.0.0+26.1.2`
+- 工具链：Java `21 → 25` / Gradle `8.13 → 9.2.1` / `net.neoforged.gradle.userdev` `7.0.183 → 7.1.38` / `foojay-resolver` `0.9.0 → 1.0.0`
+- 资源：`pack_format` `34 → 81` / `compatibilityLevel` `JAVA_21 → JAVA_25`
+- 构建：`neoforge.logging.*` → `forge.logging.*`，`runs { data }` → `clientData`，`programArgument` → `argument`，`org.gradle.configuration-cache/parallel/caching` 默认开启
+
+### 适配
+- `net.minecraft.resources.ResourceLocation` → `Identifier`（`Identifier.parse`）
+- `InteractionResultHolder<T>` / `sidedSuccess` 移除：`Item.use` 现返回 `InteractionResult`，改为 `isClientSide ? SUCCESS : CONSUME`
+- `CompoundTag.getBoolean(String): boolean` → `Optional<Boolean>`：改为 `getBooleanOr(key, false)`
+- `@EventBusSubscriber(bus = Bus.GAME)` 移除 `bus` 属性
+- `FMLLoader.isProduction()`（实例方法）→ `FMLEnvironment.isProduction()`（静态）
+- `processResources` 配置缓存兼容：移除 `[project: project]` 展开
+- 局域网 Netty `kqueue`/`epoll` 在 Windows 上的探测异常：`forge.logging.console.level` `debug → info`，消除 `Log4j DebugFile` 二次渲染噪音
+
 ## 0.0.3
 
 ### 修复
