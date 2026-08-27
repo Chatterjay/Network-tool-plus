@@ -43,7 +43,7 @@ public class CuriosProxy {
 
     private static boolean hasCollectorMode(ItemStack stack) {
         var data = stack.get(DataComponents.CUSTOM_DATA);
-        return data != null && data.copyTag().getBoolean("collector_mode");
+        return data != null && data.copyTag().getBooleanOr("collector_mode", false);
     }
 
     public static ItemStack findActiveTool(Player player) {

@@ -19,7 +19,7 @@ import appeng.items.tools.NetworkToolItem;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
-@EventBusSubscriber(modid = Network_tool_plus.MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = Network_tool_plus.MODID)
 public class NetworkToolEvents {
 
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -50,7 +50,7 @@ public class NetworkToolEvents {
             if (!(stack.getItem() instanceof NetworkToolItem))
                 continue;
             var data = stack.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
-            if (data != null && data.copyTag().getBoolean("collector_mode"))
+            if (data != null && data.copyTag().getBooleanOr("collector_mode", false))
                 return stack;
         }
 

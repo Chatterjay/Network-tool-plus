@@ -14,12 +14,12 @@ import appeng.client.gui.style.WidgetStyle;
 import appeng.client.gui.widgets.ToolboxPanel;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @Mixin(ToolboxPanel.class)
 public abstract class ToolboxPanelMixin {
 
-    private static final ResourceLocation NTP_EXTRA_PANELS = ResourceLocation.parse("network_tool_plus:textures/guis/extra_panels.png");
+    private static final Identifier NTP_EXTRA_PANELS = Identifier.parse("network_tool_plus:textures/guis/extra_panels.png");
 
     private static Field NTP_IMAGES_FIELD;
     private static Field NTP_WIDGETS_FIELD;

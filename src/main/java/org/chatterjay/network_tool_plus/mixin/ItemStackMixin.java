@@ -19,7 +19,7 @@ public abstract class ItemStackMixin {
         ItemStack self = (ItemStack) (Object) this;
         if (self.getItem() instanceof NetworkToolItem) {
             var data = self.get(DataComponents.CUSTOM_DATA);
-            if (data != null && data.copyTag().getBoolean("collector_mode")) {
+            if (data != null && data.copyTag().getBooleanOr("collector_mode", false)) {
                 cir.setReturnValue(true);
             }
         }

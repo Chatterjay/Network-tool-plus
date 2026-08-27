@@ -16,7 +16,6 @@ import appeng.menu.locator.MenuLocators;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -37,18 +36,18 @@ public abstract class NetworkToolItemMixin {
             if (!context.getLevel().isClientSide()) {
                 networkToolPlus$toggleCollectorMode(stack, context.getPlayer());
             }
-            cir.setReturnValue(InteractionResult.sidedSuccess(context.getLevel().isClientSide()));
+            cir.setReturnValue(context.getLevel().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
     }
 
     @Inject(method = "use", at = @At("HEAD"), cancellable = true, remap = false)
     private void networkToolPlus$use(Level level, Player player, InteractionHand hand,
-            CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
+            CallbackInfoReturnable<InteractionResult> cir) {
         if (player.isSecondaryUseActive()) {
             if (!level.isClientSide()) {
                 networkToolPlus$toggleCollectorMode(player.getItemInHand(hand), player);
             }
-            cir.setReturnValue(InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide()));
+            cir.setReturnValue(level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
     }
 
@@ -56,7 +55,7 @@ public abstract class NetworkToolItemMixin {
     private void networkToolPlus$toggleCollectorMode(ItemStack stack, Player player) {
         var data = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
         var tag = data.copyTag();
-        boolean currentMode = tag.getBoolean(TAG_COLLECTOR_MODE);
+        boolean currentMode = tag.getBooleanOr(TAG_COLLECTOR_MODE, false);
         if (currentMode) {
             tag.putBoolean(TAG_COLLECTOR_MODE, false);
         } else {

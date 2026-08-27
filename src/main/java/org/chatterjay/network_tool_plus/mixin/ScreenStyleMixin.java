@@ -10,15 +10,15 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.StyleManager;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @Mixin(StyleManager.class)
 public abstract class ScreenStyleMixin {
 
     @Unique
-    private static final ResourceLocation TOOLBOX_BG = ResourceLocation.parse("network_tool_plus:textures/guis/toolbox.png");
+    private static final Identifier TOOLBOX_BG = Identifier.parse("network_tool_plus:textures/guis/toolbox.png");
     @Unique
-    private static final ResourceLocation EXTRA_PANELS = ResourceLocation.parse("network_tool_plus:textures/guis/extra_panels.png");
+    private static final Identifier EXTRA_PANELS = Identifier.parse("network_tool_plus:textures/guis/extra_panels.png");
 
     @Inject(method = "loadStyleDocInternal", at = @At("RETURN"), remap = false)
     private static void networkToolPlus$patchBackground(String path, CallbackInfoReturnable<ScreenStyle> cir) {

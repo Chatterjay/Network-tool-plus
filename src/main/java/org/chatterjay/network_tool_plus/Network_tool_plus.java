@@ -4,7 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.FMLEnvironment;
 
 import org.chatterjay.network_tool_plus.integration.CuriosRegistration;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public class Network_tool_plus {
         LOGGER.info("[NetworkToolPlus] Mixin configs system property: {}",
                 System.getProperty("mixin.configs"));
         LOGGER.info("[NetworkToolPlus] Development environment: {}",
-                !FMLLoader.isProduction());
+                !FMLEnvironment.isProduction());
 
         if (ModList.get().isLoaded("curios")) {
             LOGGER.info("[NetworkToolPlus] Curios detected, registering integration");
