@@ -83,7 +83,7 @@ public class NetworkToolEvents {
             if (slotStack.getItem() instanceof NetworkToolItem)
                 continue;
 
-            if (!(slotStack.getItem() instanceof UpgradeCardItem))
+            if (!(slotStack.getItem() instanceof UpgradeCardItem) || !NetworkToolConfig.allows(slotStack))
                 continue;
 
             int originalCount = slotStack.getCount();

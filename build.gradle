@@ -28,7 +28,7 @@ runs {
 
     server {
         systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
-        programArgument '--nogui'
+        argument '--nogui'
     }
 
     gameTestServer {
@@ -43,10 +43,7 @@ runs {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    maven {
-        name = "AE2 Maven"
-        url = "https://maven.appliedenergistics.org/releases/"
-    }
+    mavenCentral()
     maven {
         name = "ModMaven"
         url = "https://modmaven.dev/"

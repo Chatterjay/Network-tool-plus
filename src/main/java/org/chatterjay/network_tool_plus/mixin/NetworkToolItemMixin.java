@@ -6,12 +6,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import org.chatterjay.network_tool_plus.NetworkToolConfig;
+import org.chatterjay.network_tool_plus.NetworkToolInventoryFilter;
 import org.chatterjay.network_tool_plus.integration.CuriosProxy;
 
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.materials.UpgradeCardItem;
 import appeng.items.tools.NetworkToolItem;
 import appeng.menu.locator.MenuLocators;
+import appeng.api.inventories.InternalInventory;
+import appeng.util.inv.AppEngInternalInventory;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
@@ -83,6 +87,14 @@ public abstract class NetworkToolItemMixin {
         }
     }
 
+    @Inject(method = "getInventory", at = @At("RETURN"), remap = false)
+    private static void networkToolPlus$applyStorageRules(ItemStack stack,
+            CallbackInfoReturnable<InternalInventory> cir) {
+        if (cir.getReturnValue() instanceof AppEngInternalInventory inventory) {
+            inventory.setFilter(new NetworkToolInventoryFilter());
+        }
+    }
+
     @Unique
     private void networkToolPlus$collectCards(ItemStack toolStack, Player player) {
         var inv = NetworkToolItem.getInventory(toolStack);
@@ -95,7 +107,7 @@ public abstract class NetworkToolItemMixin {
             if (slotStack.getItem() instanceof NetworkToolItem)
                 continue;
 
-            if (!(slotStack.getItem() instanceof UpgradeCardItem))
+            if (!(slotStack.getItem() instanceof UpgradeCardItem) || !NetworkToolConfig.allows(slotStack))
                 continue;
 
             int originalCount = slotStack.getCount();
