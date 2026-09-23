@@ -12,6 +12,7 @@ import appeng.items.materials.UpgradeCardItem;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
+import appeng.menu.me.common.MEStorageMenu;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -38,6 +39,10 @@ public abstract class NetworkToolQuickMoveMixin {
         var stackToMove = clickSlot.getItem();
         if (stackToMove.isEmpty()) return;
         if (!(stackToMove.getItem() instanceof UpgradeCardItem)) return;
+
+        // Terminals already transfer player-side stacks directly to the ME network.
+        // Their upgrade slots belong to the terminal item and must not intercept that action.
+        if (((Object) this) instanceof MEStorageMenu) return;
 
         var slotSemantic = getSlotSemantic(clickSlot);
         if (slotSemantic == SlotSemantics.UPGRADE) return;

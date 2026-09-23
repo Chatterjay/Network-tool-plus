@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import org.chatterjay.network_tool_plus.NetworkToolConfig;
 import org.chatterjay.network_tool_plus.integration.CuriosProxy;
 
 import appeng.items.contents.NetworkToolMenuHost;
@@ -93,7 +94,7 @@ public abstract class NetworkToolItemMixin {
             var key = BuiltInRegistries.ITEM.getKey(slotStack.getItem());
             if (key == null || !"ae2".equals(key.getNamespace()))
                 continue;
-            if (!(slotStack.getItem() instanceof UpgradeCardItem))
+            if (!(slotStack.getItem() instanceof UpgradeCardItem) || !NetworkToolConfig.allows(slotStack))
                 continue;
 
             int originalCount = slotStack.getCount();

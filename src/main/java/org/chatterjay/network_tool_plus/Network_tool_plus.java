@@ -1,7 +1,9 @@
 package org.chatterjay.network_tool_plus;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import org.chatterjay.network_tool_plus.integration.CuriosRegistration;
@@ -15,5 +17,7 @@ public class Network_tool_plus {
         MinecraftForge.EVENT_BUS.register(this);
         var modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(CuriosRegistration::init);
+
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, NetworkToolConfig.SPEC);
     }
 }

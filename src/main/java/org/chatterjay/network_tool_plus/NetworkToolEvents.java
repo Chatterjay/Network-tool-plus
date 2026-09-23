@@ -88,7 +88,7 @@ public class NetworkToolEvents {
             var key = BuiltInRegistries.ITEM.getKey(slotStack.getItem());
             if (key == null || !"ae2".equals(key.getNamespace()))
                 continue;
-            if (!(slotStack.getItem() instanceof UpgradeCardItem))
+            if (!(slotStack.getItem() instanceof UpgradeCardItem) || !NetworkToolConfig.allows(slotStack))
                 continue;
 
             int originalCount = slotStack.getCount();

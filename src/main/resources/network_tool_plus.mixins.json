@@ -7,6 +7,7 @@
   "mixins": [
     "ItemStackMixin",
     "NetworkToolItemMixin",
+    "NetworkToolMenuHostMixin",
     "NetworkToolSlotCountMixin$NetworkToolMenuHostMixin",
     "NetworkToolSlotCountMixin$NetworkToolMenuMixin",
     "NetworkToolSlotCountMixin$ToolboxMenuMixin",
