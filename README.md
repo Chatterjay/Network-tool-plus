@@ -24,7 +24,7 @@
 
 1. 为 Minecraft 26.1.2 安装 NeoForge 26.1.2.99+
 2. 安装 AE2 26.1.11-beta+
-3. 将模组 jar（`network_tool_plus-26.1.3.jar`）放入 `mods` 文件夹
+3. 将模组 jar（`network_tool_plus-26.1.4.jar`）放入 `mods` 文件夹
 4.（可选）安装 Curios 15.0.0+26.1.2 以获得饰品栏支持
 
 ## 使用
